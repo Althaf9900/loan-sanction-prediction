@@ -1,6 +1,7 @@
 import joblib
 import numpy as np
 import streamlit as st
+import pandas as pd
 
 # Main function for the Streamlit app
 def main():
@@ -47,9 +48,15 @@ def main():
 
     # When the 'Predict' button is clicked
     if st.button("Predict"):
-        data = np.array([[applicant_income, coapplicant_income, loan_amount, gender, 
-        married, dependents, education, self_employed, loan_amount_term, credit_history, 
-        property_area, has_coapplicant]])
+        # Numerical features
+        num_cols = [applicant_income, coapplicant_income, loan_amount]
+
+        # Categorical features
+        cat_cols = [gender, married, dependents, education, self_employed, loan_amount_term,
+        credit_history, property_area, has_coapplicant]
+
+        # Concatenating numerical and categorical features
+        data = np.array([num_cols + cat_cols])
 
         # Preprocess the data
         preprocessed_data = preprocessor.transform(data)
