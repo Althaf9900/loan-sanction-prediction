@@ -51,8 +51,8 @@ def main():
         married, dependents, education, self_employed, loan_amount_term, credit_history, 
         property_area, has_coapplicant]])
 
-        print("Columns in input data:", data.columns)
-        print("Shape of input data:", data.shape)
+        st.title("Columns in input data:", data.columns)
+        st.title("Shape of input data:", data.shape)
 
         # Preprocess the data
         preprocessed_data = preprocessor.transform(data)
