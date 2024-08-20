@@ -1,32 +1,12 @@
+import joblib
 import numpy as np
-import pickle as pkl
 import streamlit as st
-
-# Load scaler
-def load_scaler(file_path):
-    with open(file_path, 'rb') as f:
-        return pkl.load(f)
-
-# Load encoder
-def load_encoder(file_path):
-    with open(file_path, 'rb') as f:
-        return pkl.load(f)
-
-# Load model
-def load_model(file_path):
-    with open(file_path, 'rb') as f:
-        return pkl.load(f)
-
-# Function to make predictions
-def predict_loan_approval(classifier, final_input):
-    return classifier.predict(final_input)
 
 # Main function for the Streamlit app
 def main():
-    # Load the scaler, encoder, and model
-    scaler = load_scaler('scaler.pkl')
-    encoder = load_encoder('encoder.pkl')
-    classifier = load_model('model.pkl')
+    # Load the preprocessor and classifier model
+    preprocessor = joblib.load('preprocessor.joblib')
+    classifier = joblib.load('model.joblib')
 
     # Set the title of the web page
     st.title("Loan Sanction Prediction")
@@ -67,24 +47,15 @@ def main():
 
     # When the 'Predict' button is clicked
     if st.button("Predict"):
-        # Prepare numerical features for scaling
-        num_cols = np.array([[applicant_income, coapplicant_income, loan_amount]])
+        data = np.array([[applicant_income, coapplicant_income, loan_amount, gender, 
+        married, dependents, education, self_employed, loan_amount_term, credit_history, 
+        property_area, has_coapplicant]])
 
-        # Prepare categorical features for encoding
-        cat_cols = np.array([[gender, married, dependents, education, self_employed, 
-                              loan_amount_term, credit_history, property_area, has_coapplicant]])
+        # Preprocess the data
+        preprocessed_data = preprocessor.transform(data)
 
-        # Scale numerical features
-        scaled_features = scaler.transform(num_cols)
-
-        # Encode categorical features
-        encoded_features = encoder.transform(cat_cols)
-
-        # Combine scaled numerical and encoded categorical features
-        final_input = np.hstack((scaled_features, encoded_features))
-
-        # Get prediction
-        result = predict_loan_approval(classifier, final_input)
+        # Predict the result
+        result = classifier.predict(preprocessed_data)
 
         # Display the result
         if result == 1:
