@@ -1,5 +1,0 @@
-numpy
-joblib
-xgboost
-streamlit
-scikit-learn
